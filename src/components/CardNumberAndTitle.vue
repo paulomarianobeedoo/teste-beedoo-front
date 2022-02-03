@@ -1,7 +1,7 @@
 <template>
   <q-card class="my-card text-center">
     <q-card-section tag="h3" class="text-bold q-my-none">
-      {{ number }}
+      {{ currentNumber }} / {{ number }}
     </q-card-section>
 
     <q-card-section tag="p" class="q-pa-none">
@@ -19,6 +19,10 @@ export default {
       required: true
     },
     number: {
+      type: Number,
+      required: true
+    },
+    currentNumber: {
       type: Number,
       required: true
     }
