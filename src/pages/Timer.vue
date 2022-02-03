@@ -6,9 +6,9 @@
         <q-toolbar class="bg-blue text-white shadow-2 rounded-borders flex-center">
           <div class="text-h6">Ready?</div>
         </q-toolbar>
-        <CardNumberAndTitle title="Sets" :number="sets" />
-        <CardNumberAndTitle title="Work" :number="work" />
-        <CardNumberAndTitle title="Rest" :number="rest" />
+        <CardNumberAndTitle title="Sets" :number="sets" :currentNumber="countOfSets" />
+        <CardNumberAndTitle title="Work" :number="work" :currentNumber="countOfWork" />
+        <CardNumberAndTitle title="Rest" :number="rest" :currentNumber="countOfRest" />
       </div>
 
       <q-card class="my-card">
@@ -43,12 +43,24 @@ export default {
   data: () => {
     return {
       sets: 6,
+      countOfSets: 0,
       timer:'0:05',
       work: 20,
+      countOfWork: 0,
       rest: 10,
+      countOfRest: 0,
       run: 'start',
-      counter: {}
+      counter: {},
+      workAudio: null,
+      restAudio: null,
+      finishedAudio: null
     }
+  },
+  mounted () {
+      // monta todos os arquivos de áudio para começar o download antes
+      this.restAudio =  new Audio(`sounds/rest.ogg`);
+      this.workAudio = new Audio(`sounds/work.ogg`);
+      this.finishedAudio = new Audio(`sounds/finished.ogg`);
   },
   methods: {
     countdown: function() {
@@ -81,25 +93,114 @@ export default {
       if (lastTime <= 0) {
         this.timer = '0:00';
         clearInterval(this.counter);
-        if (this.sets >= 1) {
-          this.changeRun();
+        this.changeRun();
+      }
+    },
+    async changeRun() {
+      if (this.run == 'start') {
+        if (this.countOfSets == this.sets) { // valida antes  se já acabou tudo e está tentando começar um novo set
+          return this.playerByType('finished', false)
+        }
+        this.countOfRest = 0
+        this.countOfWork = 0
+        this.countOfSets++;
+        return this.playerByType('work', true)
+      }
+      if (this.run == 'work') {
+        this.countOfWork++;
+        if (this.countOfWork == this.work) {
+          if (this.countOfRest < this.rest) {
+            return this.playerByType('rest', true)
+          }
+        }
+
+        if (this.countOfRest < this.rest) { // tem descanso pra fazer?
+          return this.playerByType('rest', true)
+        }
+
+        if (this.countOfWork < this.work) { // ainda tem exercicio?
+          return this.playerByType('work', true)
+        }
+        this.run = 'start';
+        return this.startTimer(`0:0`);
+      }
+
+      if (this.run == 'rest') {
+        this.countOfRest++;
+        if (this.countOfWork < this.work) { // ainda tem exercicio?
+        return this.playerByType('work', true)
+        } else if (this.countOfSets == this.sets) {
+          if (this.countOfRest < this.rest) { // ainda tem descanso?
+            return this.playerByType('rest', true)
+          }
+          return this.playerByType('finished', false) // se já fez os sets, works e rests.. então acaba
         } else {
-          this.run = 'finished';
+          if (this.countOfRest < this.rest) { // tem descanso pendente antes de começar outro set?
+            return this.playerByType('rest', true)
+          }
+          this.run = 'start'
+          return this.startTimer(`0:0`);
         }
       }
     },
-    changeRun: function() {
-      if (this.run == 'work') {
-        this.run = 'rest';
-        this.startTimer(`0:${this.rest}`);
-      } else {
-        this.sets--;
-        this.run = 'work';
-        this.startTimer(`0:${this.work}`);
+    /**
+     * Executa um arquivo de audio baseado no tipo recebido
+     * 
+     * @param { String } type tipo do arquivo para tocar
+     * @param { Boolean } isToPlayTimer condicional para exibir ou não o contador de tempo
+     */
+    async playerByType(type, isToPlayTimer) {
+      if (['work', 'rest', 'finished'].indexOf(type) < 0) return
+      switch (type) {
+        case 'work':
+            this.run = 'work';
+            await this.playSomeMusic(this.workAudio)
+          break;
+        case 'rest':
+            this.run = 'rest';
+            await this.playSomeMusic(this.restAudio)
+          break;
+        case 'finished':
+            this.run = 'finished';
+            await this.playSomeMusic(this.finishedAudio)
+          break;
+        default:
+          break;
+      }
+      if (isToPlayTimer) {
+        this.startTimer(`0:${this[type]}`);
       }
     },
+    /**
+     * Executa um arquivo de áudio
+     * @param { Object } audio contém o elemento com o arquivo a ser executado
+     */
+    playSomeMusic(audio) {
+      return new Promise(res=>{
+        audio.play()
+        audio.onended = res
+      })
+    },
+    /**
+     * Pausa os arquivos de audio que estiverem sendo reproduzidos e retorna eles para o ínicio
+     * se chamarmos .load() novamente faria o mesmo efeito, só que iria carregar o arquivo outra vez
+     * para não ter que fazer isso, reseto ele na mão sem ter q processar o mesmo arquivo novamente
+     */
+    resetMedias () {
+      const medias = ['work', 'rest', 'finished']
+      medias.forEach(media => {
+        if (this[`${media}Audio`] && typeof this[`${media}Audio`] === 'object' && this[`${media}Audio`].readyState) {
+          this[`${media}Audio`].currentTime = 0
+          this[`${media}Audio`].pause()
+        }
+      })
+      
+    },
     reset: function() {
-      this.sets = 6;
+      this.countOfRest = 0
+      this.countOfSets = 0
+      this.countOfWork = 0
+      this.resetMedias()
       this.run = 'start';
       this.timer = '0:05';
       clearInterval(this.counter);
