@@ -6,9 +6,9 @@
         <q-toolbar class="bg-blue text-white shadow-2 rounded-borders flex-center">
           <div class="text-h6">Ready?</div>
         </q-toolbar>
-        <CardNumberAndTitle title="Sets" :number="sets" />
-        <CardNumberAndTitle title="Work" :number="work" />
-        <CardNumberAndTitle title="Rest" :number="rest" />
+        <CardNumberAndTitle title="Sets" :number="sets" :total="total.sets" />
+        <CardNumberAndTitle title="Work" :number="work" :total="total.work" />
+        <CardNumberAndTitle title="Rest" :number="rest" :total="total.rest" />
       </div>
 
       <q-card class="my-card">
@@ -47,8 +47,23 @@ export default {
       work: 20,
       rest: 10,
       run: 'start',
-      counter: {}
+      counter: {},
+      audio: {
+        finished: new Audio('/sounds/finished.ogg'),
+        rest: new Audio('/sounds/rest.ogg'),
+        work: new Audio('/sounds/work.ogg')
+      },
+      total: {
+        sets: 0,
+        work: 0,
+        rest: 0
+      },
     }
+  },
+  mounted() {
+    this.total.sets = this.sets;
+    this.total.work = this.work;
+    this.total.rest = this.rest;
   },
   methods: {
     countdown: function() {
@@ -85,16 +100,19 @@ export default {
           this.changeRun();
         } else {
           this.run = 'finished';
+          this.audio.finished.play();
         }
       }
     },
     changeRun: function() {
       if (this.run == 'work') {
         this.run = 'rest';
+        this.audio.rest.play();
         this.startTimer(`0:${this.rest}`);
       } else {
         this.sets--;
         this.run = 'work';
+        this.audio.work.play();
         this.startTimer(`0:${this.work}`);
       }
     },
