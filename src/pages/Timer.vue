@@ -49,8 +49,8 @@ export default {
       run: 'start',
       counter: {},
       audio: {
+        finished: new Audio('/sounds/finished.ogg'),
         rest: new Audio('/sounds/rest.ogg'),
-        sets: new Audio('/sounds/finished.ogg'),
         work: new Audio('/sounds/work.ogg')
       },
       total: {
@@ -100,7 +100,7 @@ export default {
           this.changeRun();
         } else {
           this.run = 'finished';
-          this.audio.sets.play();
+          this.audio.finished.play();
         }
       }
     },
