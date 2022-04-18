@@ -6,9 +6,9 @@
         <q-toolbar class="bg-blue text-white shadow-2 rounded-borders flex-center">
           <div class="text-h6">Ready?</div>
         </q-toolbar>
-        <CardNumberAndTitle title="Sets" :number="sets" :total="setsTotal" />
-        <CardNumberAndTitle title="Work" :number="work" :total="workTotal" />
-        <CardNumberAndTitle title="Rest" :number="rest" :total="restTotal" />
+        <CardNumberAndTitle title="Sets" :number="sets" :total="total.sets" />
+        <CardNumberAndTitle title="Work" :number="work" :total="total.work" />
+        <CardNumberAndTitle title="Rest" :number="rest" :total="total.rest" />
       </div>
 
       <q-card class="my-card">
@@ -43,15 +43,23 @@ export default {
   data: () => {
     return {
       sets: 6,
-      setsTotal: 6,
       timer:'0:05',
       work: 20,
-      workTotal: 20,
       rest: 10,
-      restTotal: 10,
       run: 'start',
-      counter: {}
+      counter: {},
+      total: {
+        sets: 0,
+        work: 0,
+        rest: 0
+      },
     }
+  },
+  mounted() {
+    // Definição do valor total ao iniciar a page, será igual ao valor inicial de sets | work | rest
+    this.total.sets = this.sets;
+    this.total.work = this.work;
+    this.total.rest = this.rest;
   },
   methods: {
     countdown: function() {
