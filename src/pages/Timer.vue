@@ -48,6 +48,11 @@ export default {
       rest: 10,
       run: 'start',
       counter: {},
+      audio: {
+        rest: new Audio('/sounds/rest.ogg'),
+        sets: new Audio('/sounds/finished.ogg'),
+        work: new Audio('/sounds/work.ogg')
+      },
       total: {
         sets: 0,
         work: 0,
@@ -56,7 +61,6 @@ export default {
     }
   },
   mounted() {
-    // Definição do valor total ao iniciar a page, será igual ao valor inicial de sets | work | rest
     this.total.sets = this.sets;
     this.total.work = this.work;
     this.total.rest = this.rest;
@@ -96,16 +100,19 @@ export default {
           this.changeRun();
         } else {
           this.run = 'finished';
+          this.audio.sets.play();
         }
       }
     },
     changeRun: function() {
       if (this.run == 'work') {
         this.run = 'rest';
+        this.audio.rest.play();
         this.startTimer(`0:${this.rest}`);
       } else {
         this.sets--;
         this.run = 'work';
+        this.audio.work.play();
         this.startTimer(`0:${this.work}`);
       }
     },
