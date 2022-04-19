@@ -6,13 +6,13 @@
         <q-toolbar class="bg-blue text-white shadow-2 rounded-borders flex-center">
           <div class="text-h6">Ready?</div>
         </q-toolbar>
-        <CardNumberAndTitle title="Sets" :number="sets" />
-        <CardNumberAndTitle title="Work" :number="work" />
-        <CardNumberAndTitle title="Rest" :number="rest" />
+        <CardNumberAndTitle title="Sets" :number="sets" :totalValue = "totalValue.sets" />
+        <CardNumberAndTitle title="Work" :number="work" :totalValue = "totalValue.work" />
+        <CardNumberAndTitle title="Rest" :number="rest" :totalValue = "totalValue.rest" />
       </div>
 
       <q-card class="my-card">
-        <q-card-section class="flex justify-between">
+        <q-card-section class="flex justify-center">
           <div class="text-h3">Run {{run}} {{timer}}</div>
         </q-card-section>
       </q-card>
@@ -44,10 +44,20 @@ export default {
     return {
       sets: 6,
       timer:'0:05',
-      work: 20,
-      rest: 10,
+      work: 30,
+      rest: 30,
       run: 'start',
-      counter: {}
+      counter: {},
+      totalValue: {
+        sets: 6,
+        work: 30,
+        rest: 30, 
+      },
+      audio: {
+        finishedSets: new Audio('/sounds/finished.ogg'),
+        rests: new Audio('/sounds/rest.ogg'),
+        works: new Audio('/sounds/work.ogg'),
+      }
     }
   },
   methods: {
@@ -85,21 +95,29 @@ export default {
           this.changeRun();
         } else {
           this.run = 'finished';
+          this.audio.finishedSets.play();
         }
+
       }
     },
     changeRun: function() {
       if (this.run == 'work') {
         this.run = 'rest';
+        this.rest--;
+        this.audio.rests.play();
         this.startTimer(`0:${this.rest}`);
       } else {
         this.sets--;
+        this.work--;
         this.run = 'work';
+        this.audio.works.play();
         this.startTimer(`0:${this.work}`);
       }
     },
     reset: function() {
       this.sets = 6;
+      this.work = 30;
+      this.rest = 30;
       this.run = 'start';
       this.timer = '0:05';
       clearInterval(this.counter);
