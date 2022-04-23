@@ -115,6 +115,8 @@ export default {
     },
     reset: function() {
       this.sets = 6;
+      this.work = 20;
+      this.rest = 10
       this.run = 'start';
       this.timer = '0:05';
       clearInterval(this.counter);
