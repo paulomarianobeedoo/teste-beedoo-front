@@ -6,9 +6,9 @@
         <q-toolbar class="bg-blue text-white shadow-2 rounded-borders flex-center">
           <div class="text-h6">Ready?</div>
         </q-toolbar>
-        <CardNumberAndTitle title="Sets" :number="sets" />
-        <CardNumberAndTitle title="Work" :number="work" />
-        <CardNumberAndTitle title="Rest" :number="rest" />
+        <CardNumberAndTitle title="Sets" :number="sets" :total="totalValues.sets"/>
+        <CardNumberAndTitle title="Work" :number="work" :total="totalValues.work"/>
+        <CardNumberAndTitle title="Rest" :number="rest" :total="totalValues.rest"/>
       </div>
 
       <q-card class="my-card">
@@ -47,7 +47,12 @@ export default {
       work: 20,
       rest: 10,
       run: 'start',
-      counter: {}
+      counter: {},
+      totalValues: {
+        sets: 6,
+        work: 20,
+        rest: 10,
+      },
     }
   },
   methods: {
