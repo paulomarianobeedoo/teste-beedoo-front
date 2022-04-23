@@ -103,13 +103,13 @@ export default {
       if (this.run == 'work') {
         this.run = 'rest';
         this.work--
-        this.startTimer(`0:${this.rest}`);
+        this.startTimer(`0:${this.totalValues.rest}`);
         this.sounds.rest.play();
         setTimeout(() => this.rest-- , this.rest * 1000);
       } else {
         this.sets--;
         this.run = 'work';
-        this.startTimer(`0:${this.work}`);
+        this.startTimer(`0:${this.totalValues.work}`);
         this.sounds.work.play();
       }
     },
