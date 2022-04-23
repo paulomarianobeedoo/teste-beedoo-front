@@ -53,6 +53,11 @@ export default {
         work: 20,
         rest: 10,
       },
+      sounds: {
+        finished: new Audio('/sounds/finished.ogg'),
+        rest: new Audio('/sounds/rest.ogg'),
+        work: new Audio('/sounds/work.ogg'),
+      }
     }
   },
   methods: {
@@ -90,17 +95,22 @@ export default {
           this.changeRun();
         } else {
           this.run = 'finished';
+          this.sounds.finished.play();
         }
       }
     },
     changeRun: function() {
       if (this.run == 'work') {
         this.run = 'rest';
+        this.work--
         this.startTimer(`0:${this.rest}`);
+        this.sounds.rest.play();
+        setTimeout(() => this.rest-- , this.rest * 1000);
       } else {
         this.sets--;
         this.run = 'work';
         this.startTimer(`0:${this.work}`);
+        this.sounds.work.play();
       }
     },
     reset: function() {
