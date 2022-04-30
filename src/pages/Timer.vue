@@ -25,7 +25,7 @@
       </div>
 
       <q-card class="my-card">
-        <q-card-section class="text-center cardRun">
+        <q-card-section class="text-center" v-bind:style="styleObject">
           <div class="text-h3">Run {{ run }} {{ timer }}</div>
         </q-card-section>
       </q-card>
@@ -71,6 +71,9 @@ export default {
         rest: new Audio("/sounds/rest.ogg"),
         work: new Audio("/sounds/work.ogg"),
       },
+      styleObject: {
+        background: "#2196f3",
+      },
     };
   },
   methods: {
@@ -108,6 +111,7 @@ export default {
           this.changeRun();
         } else {
           this.run = "finished";
+          this.styleObject.background = 'red';
           this.audio.finished.play();
         }
       }
@@ -116,11 +120,13 @@ export default {
       if (this.run == "work") {
         this.run = "rest";
         this.startTimer(`0:${this.rest}`);
-        this.audio.rest.play();
+        this.styleObject.background = 'yellow';
+        this.audio.rest.play();  
       } else {
         this.sets--;
         this.run = "work";
         this.startTimer(`0:${this.work}`);
+        this.styleObject.background = '#2FC18C';
         this.audio.work.play();
       }
     },
