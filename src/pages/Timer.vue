@@ -25,7 +25,7 @@
       </div>
 
       <q-card class="my-card">
-        <q-card-section class="text-center cardRun">
+        <q-card-section class="flex justify-between">
           <div class="text-h3">Run {{ run }} {{ timer }}</div>
         </q-card-section>
       </q-card>
@@ -90,7 +90,6 @@ export default {
         let now = new Date();
         let distance = timeTo.getTime() - now.getTime();
         const { minutes, seconds } = this.calcDistanceTime(distance);
-        console.log(seconds, 'seconds')
         this.timer = `${minutes}:${seconds}`;
         this.setStateOverAll(minutes + seconds);
       }, 992);
