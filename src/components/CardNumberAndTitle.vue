@@ -1,7 +1,7 @@
 <template>
   <q-card class="my-card text-center">
     <q-card-section tag="h3" class="text-bold q-my-none">
-      {{ number }}
+      {{ number }}  / {{ total }}
     </q-card-section>
 
     <q-card-section tag="p" class="q-pa-none">
@@ -12,18 +12,22 @@
 
 <script>
 export default {
-  name: 'CardNumberAndTitle',
+  name: "CardNumberAndTitle",
   props: {
     title: {
       type: String,
-      required: true
+      required: true,
     },
     number: {
       type: Number,
-      required: true
-    }
-  }
-}
+      required: true,
+    },
+    total: {
+      type: Number,
+      required: true,
+    },
+  },
+};
 </script>
 
 <style lang="sass" scoped>
