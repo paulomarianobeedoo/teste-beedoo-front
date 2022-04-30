@@ -93,7 +93,7 @@ export default {
         let now = new Date();
         let distance = timeTo.getTime() - now.getTime();
         const { minutes, seconds } = this.calcDistanceTime(distance);
-        this.timer = `${minutes}:${seconds}`;
+        seconds <= 9 ?  this.timer = `${minutes}:0${seconds}` :  this.timer = `${minutes}:${seconds}`;     
         this.setStateOverAll(minutes + seconds);
       }, 992);
     },
