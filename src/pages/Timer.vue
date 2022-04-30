@@ -93,7 +93,9 @@ export default {
         let now = new Date();
         let distance = timeTo.getTime() - now.getTime();
         const { minutes, seconds } = this.calcDistanceTime(distance);
-        seconds <= 9 ?  this.timer = `${minutes}:0${seconds}` :  this.timer = `${minutes}:${seconds}`;     
+        seconds <= 9
+          ? (this.timer = `${minutes}:0${seconds}`)
+          : (this.timer = `${minutes}:${seconds}`);
         this.setStateOverAll(minutes + seconds);
       }, 992);
     },
@@ -111,7 +113,7 @@ export default {
           this.changeRun();
         } else {
           this.run = "finished";
-          this.styleObject.background = 'red';
+          this.styleObject.background = "red";
           this.audio.finished.play();
         }
       }
@@ -120,13 +122,13 @@ export default {
       if (this.run == "work") {
         this.run = "rest";
         this.startTimer(`0:${this.rest}`);
-        this.styleObject.background = 'yellow';
-        this.audio.rest.play();  
+        this.styleObject.background = "yellow";
+        this.audio.rest.play();
       } else {
         this.sets--;
         this.run = "work";
         this.startTimer(`0:${this.work}`);
-        this.styleObject.background = '#2FC18C';
+        this.styleObject.background = "#2FC18C";
         this.audio.work.play();
       }
     },
